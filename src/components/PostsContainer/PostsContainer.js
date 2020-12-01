@@ -25,7 +25,7 @@ export function PostsContainer({clickOpenEdit, theme}) {
                         </div>
                     </Link>
                     <div style={theme.post.absoluteBtns}>
-                        <ButtonAddAndEdit buttonType={false} clickOpenEdit={clickOpenEdit} theme={theme} />
+                        <ButtonAddAndEdit buttonType={false} clickOpenEdit={() => clickOpenEdit(post)} theme={theme} />
                         <Button style={theme.post.absoluteBtns.white} onClick={()=> dispatch({type: 'REMOVE_POST', id: post.id})}><DeleteIcon /></Button>
                     </div>
                 </GridListTile>

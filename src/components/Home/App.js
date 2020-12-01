@@ -105,12 +105,10 @@ function App() {
       setAction(action)
     }
 
-    const handleModalEditPost = (action, id) => {
-      // let index = [];
-      // index = mainData.postList.filter(i => {
-      //   return i.id !== id
-      // })
-      // console.log('post data here ', index)
+    const handleModalEditPost = (action, post) => {
+      // Enviar post con las modificaciones
+      // findIndex
+      setPost(post)
       setOpen(true)
       setAction(action)
     }
@@ -139,7 +137,7 @@ function App() {
             <ButtonAddAndEdit theme={theme} buttonType={true} clickOpen={() => handleModalOpen("Create Post")}  />
             <BarCategoriesNavigation chageCategory={newcategory => setCategory(newcategory)} theme={theme} categories={mainData.categories} />
             <PostsContainer 
-              clickOpenEdit={() => {handleModalEditPost("Edit Post")}} 
+              clickOpenEdit={(post) => {handleModalEditPost("Edit Post", post)}} 
               posts={mainData.postList} 
               theme={theme} 
             />
