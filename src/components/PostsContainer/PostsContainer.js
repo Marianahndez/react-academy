@@ -1,18 +1,16 @@
-import React, {useReducer, useContext} from 'react';
 import { Button, GridList, GridListTile } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ButtonAddAndEdit from '../ButtonAddAndEdit/ButtonAddAndEdit';
-import { handlePosts } from '../../providers/reducers';
 import { Link } from 'react-router-dom';
-import { GlobalContext } from '../../providers/global-context';
+import { useDispatch } from 'react-redux';
+import { removePost } from '../redux/Post/postActions';
 
-export function PostsContainer({clickOpenEdit, theme}) {
-    const MainData = useContext(GlobalContext);
-    const [mainData, dispatch] = useReducer(handlePosts, MainData.postList);
+export function PostsContainer({clickOpenEdit, theme, posts}) {
+    const dispatch = useDispatch();
 
     return(
         <GridList cols={2} style={theme.post.postsContainer}>
-            {mainData.map((post, i) => {
+            {posts.map((post, i) => {
                 let url = "/post/" + JSON.stringify(post.id);
                 return(
                     <GridListTile style={theme.post.container} key={i}>
@@ -26,7 +24,7 @@ export function PostsContainer({clickOpenEdit, theme}) {
                     </Link>
                     <div style={theme.post.absoluteBtns}>
                         <ButtonAddAndEdit buttonType={false} clickOpenEdit={() => clickOpenEdit(post)} theme={theme} />
-                        <Button style={theme.post.absoluteBtns.white} onClick={()=> dispatch({type: 'REMOVE_POST', id: post.id})}><DeleteIcon /></Button>
+                        <Button style={theme.post.absoluteBtns.white} onClick={()=> dispatch(removePost(post.id))}><DeleteIcon /></Button>
                     </div>
                 </GridListTile>
                 )

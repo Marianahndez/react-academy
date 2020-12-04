@@ -1,13 +1,14 @@
-import { useContext, useReducer, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import BarCategoriesNavigation from '../CategoriesNavigation/BarCategoriesNavigation';
 import PostsContainer from '../PostsContainer/PostsContainer';
 import ThemeContext, { theme } from '../../styles/theme-context';
 import { Dialog, DialogContent, TextField, InputLabel, Select, MenuItem, FormControl, Button } from '@material-ui/core';
-import { GlobalContext, PostContext } from '../../providers/global-context';
+import { PostContext } from '../../providers/global-context';
 import ButtonAddAndEdit from '../ButtonAddAndEdit/ButtonAddAndEdit';
-import { handlePosts } from '../../providers/reducers';
 import HeaderTitle from '../Header/HeaderTitle';
+import { useDispatch, connect } from 'react-redux';
+import { addPost } from '../redux/Post/postActions';
 
 function ModalAddEdit({
   actionTypeRecived, 
@@ -49,13 +50,18 @@ function ModalAddEdit({
   )
 }
 
-function App() {
-    const MainData = useContext(GlobalContext);
-    const [mainData, dispatch] = useReducer(handlePosts, MainData);
+function mapStateToProps(state){
+  return {posts: state.post}
+}
+
+function App(props) {
+    const categories =  ['All', 'Travel', 'Lifestyle', 'Business', 'Food', 'Work'];
+    const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [action, setAction] = useState("");
-    const [sendPosts, setSendPosts] = useState(mainData.postList);
-    const [category, setCategory] = useState(mainData.categories[0]);
+    // const [sendPosts, setSendPosts] = useState(mainData.postList);
+    // const [category, setCategory] = useState(mainData.categories[0]);
+    const [category, setCategory] = useState(categories);
     const [post, setPost] = useState({
       id: "",
       title: "",
@@ -88,7 +94,7 @@ function App() {
 
     const AddPost = (event) => {
       event.preventDefault();
-      dispatch({type: 'ADD_POST', post: post});
+      dispatch(addPost(post));
       setPost({
         id: "",
         title: "",
@@ -123,7 +129,7 @@ function App() {
         <ModalAddEdit 
           actionTypeRecived={action} 
           openDialog={open} 
-          categories={mainData.categories} 
+          categories={categories} 
           post={post}
           onChangeInput={handleInputChange}
           handleClickClose={handleModalClose} 
@@ -135,10 +141,10 @@ function App() {
           <HeaderTitle theme={theme} />
           <Grid item xs={12}>
             <ButtonAddAndEdit theme={theme} buttonType={true} clickOpen={() => handleModalOpen("Create Post")}  />
-            <BarCategoriesNavigation chageCategory={newcategory => setCategory(newcategory)} theme={theme} categories={mainData.categories} />
+            <BarCategoriesNavigation chageCategory={newcategory => setCategory(newcategory)} theme={theme} categories={categories} />
             <PostsContainer 
               clickOpenEdit={(post) => {handleModalEditPost("Edit Post", post)}} 
-              posts={mainData.postList} 
+              posts={props.posts} 
               theme={theme} 
             />
           </Grid>
@@ -148,4 +154,4 @@ function App() {
     );   
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

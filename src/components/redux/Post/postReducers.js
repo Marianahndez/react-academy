@@ -4,32 +4,25 @@ import  {
     ADD_COMMENT
 } from './postTypes';
 
-const INITIAL_STATE = {
-    id: "",
-    title: "",
-    description: "",
-    category: "",
-    urlImg: "https://source.unsplash.com/random",
-    comments: []
-}
+const INITIAL_STATE = [];
 
 const reducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case ADD_POST: 
-          let aux = state.postList;
-          aux.push({
-            id: aux.length,
-            title: action.post.title,
-            description: action.post.description,
-            category: action.post.category,
-            urlImg: action.post.urlImg,
+          console.log('payload ', action.payload);
+          state.push({
+            id: state.length,
+            title: action.payload.title,
+            description: action.payload.description,
+            category: action.payload.category,
+            urlImg: action.payload.urlImg,
             comments: []
           });
-          return {...state, postList: aux}
+          return state
         case REMOVE_POST:
           let index = [];
           index = state.filter(i => {
-            return i.id !== action.id
+            return i.id !== action.payload
           })
           return index
         case ADD_COMMENT:

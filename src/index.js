@@ -6,7 +6,7 @@ import PostView from './components/PostView/postView';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import store from './redux/store';
+import store from './components/redux/store';
 
 ReactDOM.render(
   <Provider store={store}>

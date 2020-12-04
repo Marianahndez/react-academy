@@ -4,15 +4,18 @@ import  {
     ADD_COMMENT
 } from './postTypes';
 
-export const addPost = () => {
+export const addPost = (postObj) => {
+    console.log('reciving post: ', postObj)
     return {
-        type: ADD_POST
+        type: ADD_POST,
+        payload: postObj
     }
 }
 
-export const removePost = () => {
+export const removePost = (postID) => {
     return {
-        type: REMOVE_POST
+        type: REMOVE_POST,
+        payload: postID
     }
 }
 
