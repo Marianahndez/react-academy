@@ -17,6 +17,7 @@ function ModalAddEdit({
   onChangeInput,
   handleClickClose, 
   handleAddingPost, 
+  handleEditPost, 
   theme}){
 
   return (
@@ -41,7 +42,12 @@ function ModalAddEdit({
             </Select>
         </FormControl>
         <TextField name="urlImg" label="Image URL" value={post.urlImg} onChange={onChangeInput} style={theme.dialog.MuiFormControlRoot} required/>
-        <Button variant="contained" color="primary" type="submit" onClick={handleAddingPost} style={theme.dialog.button}>Save</Button>
+        {
+          actionTypeRecived === 'Create Post' ?
+          <Button variant="contained" color="primary" type="submit" onClick={handleAddingPost} style={theme.dialog.button}>Save</Button>
+          :
+          <Button variant="contained" color="primary" onClick={handleEditPost} style={theme.dialog.button}>Save changes</Button>
+        }
         <Button variant="contained" onClick={handleClickClose} style={theme.dialog.button}>Cancel</Button>
         </form>
       </DialogContent>
@@ -54,7 +60,7 @@ function App() {
     const [mainData, dispatch] = useReducer(handlePosts, MainData);
     const [open, setOpen] = useState(false);
     const [action, setAction] = useState("");
-    const [sendPosts, setSendPosts] = useState(mainData.postList);
+    const [postToShow, setPostToShow] = useState(mainData.postList);
     const [category, setCategory] = useState(mainData.categories[0]);
     const [post, setPost] = useState({
       id: "",
@@ -100,7 +106,21 @@ function App() {
       setOpen(false)
     }
 
+    const EditPost = (event) => {
+      event.preventDefault();
+      dispatch({type: 'EDIT_POST', post: post})
+      setOpen(false)
+    }
+
     const handleModalOpen = (action) => {
+      setPost({
+        id: "",
+        title: "",
+        description: "",
+        category: "",
+        urlImg: "https://source.unsplash.com/random",
+        comments: []
+      });
       setOpen(true)
       setAction(action)
     }
@@ -128,6 +148,7 @@ function App() {
           onChangeInput={handleInputChange}
           handleClickClose={handleModalClose} 
           handleAddingPost={AddPost} 
+          handleEditPost={EditPost} 
           theme={theme} 
         />
 
