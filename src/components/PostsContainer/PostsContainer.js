@@ -1,11 +1,13 @@
-import { Button, GridList, GridListTile } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ButtonAddAndEdit from '../ButtonAddAndEdit/ButtonAddAndEdit';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { removePost } from '../redux/Post/postActions';
 
-export function PostsContainer({clickOpenEdit, theme, posts}) {
+import { Button, GridList, GridListTile } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import ButtonAddAndEdit from '../ButtonAddAndEdit/ButtonAddAndEdit';
+
+function PostsContainer({ clickOpenEdit, theme, posts }) {
     const dispatch = useDispatch();
 
     return(

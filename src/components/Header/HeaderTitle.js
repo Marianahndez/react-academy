@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 
-export function HeaderTitle({theme}) {
+function HeaderTitle({ theme }) {
     return (
         <Grid item xs={12} style={theme.globalStyles.center}>
             <h3 style={theme.header.decorativeTitle}>

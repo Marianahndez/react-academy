@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-// import { GlobalContext } from '../../providers/global-context';
-import Grid from '@material-ui/core/Grid';
+import { useDispatch } from 'react-redux';
 import ThemeContext, { theme } from '../../styles/theme-context';
-import HeaderTitle from '../Header/HeaderTitle';
+import { addComment } from '../redux/Post/postActions';
+
+import Grid from '@material-ui/core/Grid';
 import { Button, TextField } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-// import { handlePosts } from '../../providers/reducers';
-import { useDispatch } from 'react-redux';
-import { addComment } from '../redux/Post/postActions';
 
+import HeaderTitle from '../Header/HeaderTitle';
 
-export function PostView(props){
-    //params get info in string
-    // const MainData = useContext(GlobalContext);
-    // const [mainData, dispatch] = useReducer(handlePosts, post);
+function PostView(props){
     let { slug } = useParams();
     const dispatch = useDispatch();
     const [post, setPost] = useState({});

@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import store from './components/redux/store';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import reportWebVitals from './reportWebVitals';
+
 import './index.css';
 import App from './components/Home/App';
 import PostView from './components/PostView/postView';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import store from './components/redux/store';
 
 ReactDOM.render(
   <Provider store={store}>

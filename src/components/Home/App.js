@@ -1,14 +1,25 @@
 import { useState, useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
-import BarCategoriesNavigation from '../CategoriesNavigation/BarCategoriesNavigation';
-import PostsContainer from '../PostsContainer/PostsContainer';
-import ThemeContext, { theme } from '../../styles/theme-context';
-import { Dialog, DialogContent, TextField, InputLabel, Select, MenuItem, FormControl, Button } from '@material-ui/core';
-import { PostContext } from '../../providers/global-context';
-import ButtonAddAndEdit from '../ButtonAddAndEdit/ButtonAddAndEdit';
-import HeaderTitle from '../Header/HeaderTitle';
 import { useDispatch, connect } from 'react-redux';
 import { addPost, editPost } from '../redux/Post/postActions';
+import ThemeContext, { theme } from '../../styles/theme-context';
+import { PostContext } from '../../providers/global-context';
+
+import BarCategoriesNavigation from '../CategoriesNavigation/BarCategoriesNavigation';
+import PostsContainer from '../PostsContainer/PostsContainer';
+import ButtonAddAndEdit from '../ButtonAddAndEdit/ButtonAddAndEdit';
+import HeaderTitle from '../Header/HeaderTitle';
+
+import Grid from '@material-ui/core/Grid';
+import { 
+  Dialog, 
+  DialogContent, 
+  TextField, 
+  InputLabel, 
+  Select, 
+  MenuItem, 
+  FormControl, 
+  Button 
+} from '@material-ui/core';
 
 function ModalAddEdit({
   actionTypeRecived, 
@@ -19,7 +30,8 @@ function ModalAddEdit({
   handleClickClose, 
   handleUpdatePost,
   handleAddingPost, 
-  theme}){
+  theme
+}){
 
   return (
     <Dialog open={openDialog} onClose={handleClickClose} fullWidth={true} maxWidth={'sm'}>
@@ -56,18 +68,56 @@ function ModalAddEdit({
 }
 
 function mapStateToProps(state){
-  return {posts: state.post}
+  return {
+    posts: state.post
+  }
 }
 
 function App(props) {
-    const categories =  ['All', 'Travel', 'Lifestyle', 'Business', 'Food', 'Work'];
-    const dispatch = useDispatch();
-    const [open, setOpen] = useState(false);
-    const [action, setAction] = useState("");
-    // const [sendPosts, setSendPosts] = useState(mainData.postList);
-    // const [category, setCategory] = useState(mainData.categories[0]);
-    const [category, setCategory] = useState(categories);
-    const [post, setPost] = useState({
+  const dispatch = useDispatch();
+  const categories =  ['All', 'Travel', 'Lifestyle', 'Business', 'Food', 'Work'];
+  const [postToShow, setPostToShow] = useState(props.posts);
+  const [open, setOpen] = useState(false);
+  const [action, setAction] = useState("");
+  const [category, setCategory] = useState(categories[0]);
+  const [post, setPost] = useState({
+    id: "",
+    title: "",
+    description: "",
+    category: "",
+    urlImg: "https://source.unsplash.com/random",
+    comments: []
+  });
+
+  useEffect(()=>{
+    if(props.posts !== ''){
+      const newPostList = props.posts.filter(i => {
+        return i.category === category
+      })
+      setPostToShow(newPostList)
+    }
+
+    if(category === 'All'){
+      setPostToShow(props.posts)
+    }
+  }, [category, postToShow])
+
+  const handleCategory = (newCategory) => {
+    setCategory(newCategory)
+    console.log('categories in props: ', newCategory);
+  }
+
+  const handleInputChange = (e) => {
+    const newPost = {...post};
+    newPost[e.target.name] = e.target.value;
+    e.preventDefault();
+    setPost(newPost)
+  }
+
+  const AddPost = (event) => {
+    event.preventDefault();
+    dispatch(addPost(post));
+    setPost({
       id: "",
       title: "",
       description: "",
@@ -75,65 +125,39 @@ function App(props) {
       urlImg: "https://source.unsplash.com/random",
       comments: []
     });
+    setOpen(false)
+  }
 
-    useEffect(()=>{
-    }, [category])
-  
-    // const handleCategories = (e) => {
-    //   setCategory(e)
-    // }
+  const handleModalOpen = (action) => {
+    setOpen(true)
+    setPost({
+      id: "",
+      title: "",
+      description: "",
+      category: "",
+      urlImg: "https://source.unsplash.com/random",
+      comments: []
+    })
+    setAction(action)
+  }
 
-    const handleInputChange = (e) => {
-      const newPost = {...post};
-      newPost[e.target.name] = e.target.value;
-      e.preventDefault();
-      setPost(newPost)
-    }
+  const handleModalEditPost = (action, post) => {
+    setPost(post)
+    setOpen(true)
+    setAction(action)
+  }
 
-    const AddPost = (event) => {
-      event.preventDefault();
-      dispatch(addPost(post));
-      setPost({
-        id: "",
-        title: "",
-        description: "",
-        category: "",
-        urlImg: "https://source.unsplash.com/random",
-        comments: []
-      });
-      setOpen(false)
-    }
+  const updatePost = (event) => {
+    event.preventDefault();
+    dispatch(editPost(post))
+    setOpen(false)
+  }
 
-    const handleModalOpen = (action) => {
-      setOpen(true)
-      setPost({
-        id: "",
-        title: "",
-        description: "",
-        category: "",
-        urlImg: "https://source.unsplash.com/random",
-        comments: []
-      })
-      setAction(action)
-    }
+  const handleModalClose = () => {
+    setOpen(false)
+  }
 
-    const handleModalEditPost = (action, post) => {
-      setPost(post)
-      setOpen(true)
-      setAction(action)
-    }
-
-    const updatePost = (event) => {
-      event.preventDefault();
-      dispatch(editPost(post))
-      setOpen(false)
-    }
-
-    const handleModalClose = () => {
-      setOpen(false)
-    }
-
-    return (
+  return (
     <PostContext>
       <ThemeContext.Provider value={theme}>
         <ModalAddEdit 
@@ -152,17 +176,17 @@ function App(props) {
           <HeaderTitle theme={theme} />
           <Grid item xs={12}>
             <ButtonAddAndEdit theme={theme} buttonType={true} clickOpen={() => handleModalOpen("Create Post")}  />
-            <BarCategoriesNavigation chageCategory={newcategory => setCategory(newcategory)} theme={theme} categories={categories} />
+            <BarCategoriesNavigation chageCategory={(newcategory) => handleCategory(newcategory)} theme={theme} categories={categories} />
             <PostsContainer 
               clickOpenEdit={(post) => handleModalEditPost("Edit Post", post)}
-              posts={props.posts} 
+              posts={postToShow} 
               theme={theme} 
             />
           </Grid>
         </Grid>
-        </ThemeContext.Provider>
-      </PostContext>
-    );   
+      </ThemeContext.Provider>
+    </PostContext>
+  );   
 }
 
 export default connect(mapStateToProps)(App);
