@@ -1,38 +1,44 @@
-import { useEffect, useContext, useState, useReducer } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { GlobalContext } from '../../providers/global-context';
+// import { GlobalContext } from '../../providers/global-context';
 import Grid from '@material-ui/core/Grid';
 import ThemeContext, { theme } from '../../styles/theme-context';
 import HeaderTitle from '../Header/HeaderTitle';
 import { Button, TextField } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { handlePosts } from '../../providers/reducers';
+// import { handlePosts } from '../../providers/reducers';
+import { useDispatch } from 'react-redux';
+import { addComment } from '../redux/Post/postActions';
 
-export function PostView(){
+
+export function PostView(props){
     //params get info in string
-    const MainData = useContext(GlobalContext);
+    // const MainData = useContext(GlobalContext);
+    // const [mainData, dispatch] = useReducer(handlePosts, post);
     let { slug } = useParams();
+    const dispatch = useDispatch();
     const [post, setPost] = useState({});
-    const [mainData, dispatch] = useReducer(handlePosts, post);
     const [comment, setComment] = useState('');
+    const postsOfProps = props.location.aboutProps.posts;
+
 
     useEffect(()=>{
         let aux = {}
 
-        MainData.postList.map(i => {
+        postsOfProps.map(i => {
             if(i.id == slug){
                 aux = i
             }
         })
 
-        setPost(aux)
+        setPost(aux);
     },[])
 
     const handleAddingComment = (e) => {
         e.preventDefault();
         post.comments.push( comment )
-        dispatch({type: 'ADD_COMMENT', text: post.comments});
+        dispatch(addComment(post.comments));
         setComment('')
     }
 

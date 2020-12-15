@@ -8,7 +8,7 @@ import { PostContext } from '../../providers/global-context';
 import ButtonAddAndEdit from '../ButtonAddAndEdit/ButtonAddAndEdit';
 import HeaderTitle from '../Header/HeaderTitle';
 import { useDispatch, connect } from 'react-redux';
-import { addPost } from '../redux/Post/postActions';
+import { addPost, editPost } from '../redux/Post/postActions';
 
 function ModalAddEdit({
   actionTypeRecived, 
@@ -17,6 +17,7 @@ function ModalAddEdit({
   post,
   onChangeInput,
   handleClickClose, 
+  handleUpdatePost,
   handleAddingPost, 
   theme}){
 
@@ -42,7 +43,11 @@ function ModalAddEdit({
             </Select>
         </FormControl>
         <TextField name="urlImg" label="Image URL" value={post.urlImg} onChange={onChangeInput} style={theme.dialog.MuiFormControlRoot} required/>
-        <Button variant="contained" color="primary" type="submit" onClick={handleAddingPost} style={theme.dialog.button}>Save</Button>
+        {
+          actionTypeRecived !== 'Create Post' ? 
+          <Button variant="contained" color="primary" type="submit" onClick={handleUpdatePost} style={theme.dialog.button}>Save Changes</Button> :
+          <Button variant="contained" color="primary" type="submit" onClick={handleAddingPost} style={theme.dialog.button}>Save</Button>
+        }
         <Button variant="contained" onClick={handleClickClose} style={theme.dialog.button}>Cancel</Button>
         </form>
       </DialogContent>
@@ -72,13 +77,6 @@ function App(props) {
     });
 
     useEffect(()=>{
-      // if(!open){
-      //   setPost()
-      // }
-      // console.log('category : ', category)
-      // let postByCategory = mainData.postList.forEach(newArray => newArray.category === category ) 
-      // console.log('postByCategory: ', postByCategory)
-      // setSendPosts(postByCategory)
     }, [category])
   
     // const handleCategories = (e) => {
@@ -108,15 +106,27 @@ function App(props) {
 
     const handleModalOpen = (action) => {
       setOpen(true)
+      setPost({
+        id: "",
+        title: "",
+        description: "",
+        category: "",
+        urlImg: "https://source.unsplash.com/random",
+        comments: []
+      })
       setAction(action)
     }
 
     const handleModalEditPost = (action, post) => {
-      // Enviar post con las modificaciones
-      // findIndex
       setPost(post)
       setOpen(true)
       setAction(action)
+    }
+
+    const updatePost = (event) => {
+      event.preventDefault();
+      dispatch(editPost(post))
+      setOpen(false)
     }
 
     const handleModalClose = () => {
@@ -134,6 +144,7 @@ function App(props) {
           onChangeInput={handleInputChange}
           handleClickClose={handleModalClose} 
           handleAddingPost={AddPost} 
+          handleUpdatePost={updatePost} 
           theme={theme} 
         />
 
@@ -143,7 +154,7 @@ function App(props) {
             <ButtonAddAndEdit theme={theme} buttonType={true} clickOpen={() => handleModalOpen("Create Post")}  />
             <BarCategoriesNavigation chageCategory={newcategory => setCategory(newcategory)} theme={theme} categories={categories} />
             <PostsContainer 
-              clickOpenEdit={(post) => {handleModalEditPost("Edit Post", post)}} 
+              clickOpenEdit={(post) => handleModalEditPost("Edit Post", post)}
               posts={props.posts} 
               theme={theme} 
             />

@@ -14,7 +14,10 @@ export function PostsContainer({clickOpenEdit, theme, posts}) {
                 let url = "/post/" + JSON.stringify(post.id);
                 return(
                     <GridListTile style={theme.post.container} key={i}>
-                    <Link to={url} style={theme.globalStyles.links}>
+                    <Link to={{
+                        pathname: url,
+                        aboutProps:{posts}
+                    }} style={theme.globalStyles.links}>
                         <h1 style={theme.post.title}>{post.title}</h1>
                         <div>
                             <p style={theme.post.comments}>0 Comments </p>

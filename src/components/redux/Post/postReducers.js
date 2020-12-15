@@ -1,5 +1,6 @@
 import  {
     ADD_POST,
+    EDIT_POST,
     REMOVE_POST,
     ADD_COMMENT
 } from './postTypes';
@@ -9,7 +10,6 @@ const INITIAL_STATE = [];
 const reducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case ADD_POST: 
-          console.log('payload ', action.payload);
           state.push({
             id: state.length,
             title: action.payload.title,
@@ -19,6 +19,10 @@ const reducer = (state = INITIAL_STATE, action) => {
             comments: []
           });
           return state
+        case EDIT_POST: 
+          const aux = state.findIndex(i => i.id === action.payload.id)
+          state[aux] = action.payload;
+          return state;
         case REMOVE_POST:
           let index = [];
           index = state.filter(i => {
@@ -27,10 +31,10 @@ const reducer = (state = INITIAL_STATE, action) => {
           return index
         case ADD_COMMENT:
           let comments = [];
-          comments.push(action.text);
-          return {...state, comments}
+          comments.push(action.payload);
+          return state
         default:
-          return state;
+          return state
       }
 }
 
